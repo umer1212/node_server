@@ -17,7 +17,6 @@ var pestRouter = require('./routes/pests');
 var diseaseRouter = require('./routes/diseases');
 var cureRouter = require('./routes/cures');
 
-var PORT = process.env.PORT || 3000
 var dbUrl = "mongodb+srv://dbAdmin:adminPassword@cluster0-7nmav.gcp.mongodb.net/smartfarming?retryWrites=true&w=majority";
 
 db.on("error", function() {
@@ -78,7 +77,10 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
-app.listen(PORT, function(){
-  console.log("server is listening")
-})
+
+// Setting the PORT
+const PORT = process.env.PORT || 5000;
+// Listening to port
+app.listen(PORT, () => console.log(`Server is listening to port ${PORT}`));
+
 module.exports = app;
