@@ -1,66 +1,177 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var mongoose = require('mongoose');
-var Diseases = require('../models/Diseases');
-var Cures = require('../models/Cures');
-var Pests = require('../models/Pests');
+var Diseases = require("../models/Diseases");
+var cloudinary = require("cloudinary");
+const upload = require("../config/multer");
 
-router.post('/',(req,res,next)=>{
-	var disease = new Diseases({
-		diseaseId:mongoose.Types.ObjectId(),
-		diseaseName:req.body.Name,
-		description:req.body.Description,
-		symptoms:req.body.Symptoms,
-		diseaseImages:req.body.Images,
-		cures:req.body.Cures,
-		causedBy:req.body.CausedBy
-	});
-	disease.save()
-	.then(result=>{
-		res.status(200).json(result);
-	})
-	.catch(err=>{
-		res.status(500).json(result);
-	});
-});
-router.get('/',(req,res,next)=>{
-	Diseases.find()
-	.populate('causedBy','_id pestName type')
-	.exec()
-	.then(docs=>{
-		// res.status(200).json(docs);
-		res.status(200).json({
-			count:docs.length,
-			DiseasesFound:docs.map(doc=>{
-				return{
-					ID:doc._id,
-					Name:doc.name,
-					Description:doc.description,
-					Symptoms:doc.symptoms,
-					Images:doc.images,
-					Request:{
-						Type:'GET',
-						Url:'http:localhost:3000/diseases/'+doc._id
-					},
-					CausedBy:causedBy
-				}
-			})
-		});
-	})
-	.catch(err=>{
-		res.status(500).json(err);
-	});
-});
-router.delete('/:ID',(req,res,next)=>{
-	Diseases.remove({diseaseId:req.params.ID}).exec()
-	.then(result=>{
-		res.status(200).json(result);
-	})
-	.catch(err=>{
-		res.status(500).json(err);
-	});
-});
-router.put('/',(req,res,next)=>{
+var setpermission = function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Methods", "*");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+};
 
+router.post("/", upload.single("diseaseImage"), setpermission, async function (
+  req,
+  res,
+  next
+) {
+  console.log(req.body);
+
+  var disease = new Diseases();
+
+  disease.diseaseName = req.body.name;
+  disease.description = req.body.description;
+  disease.symptoms = req.body.symptoms;
+  disease.severity = req.body.severity;
+  disease.cures = req.body.cures;
+  disease.causedBy = req.body.causedBy.split(",");
+
+  if (req.file) {
+    const result = await cloudinary.v2.uploader.upload(req.file.path);
+    console.log(result);
+    if (result) {
+      disease.diseaseImage = result.url;
+      console.log(disease.diseaseImage);
+    }
+  }
+
+  disease
+    .save()
+    .then((result) => {
+      res.status(200).json({
+        status: 1,
+        result,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
+
+router.get("/:id", (req, res, next) => {
+  var id = req.params.id;
+  Diseases.findOne({
+    _id: id,
+  })
+    .populate({
+      path: "Disease",
+      populate: {
+        path: "causedBy",
+        model: "pests",
+      },
+    })
+    .exec(function (error, results) {
+      if (error) {
+        return next(error);
+      }
+
+      if (!results) {
+        res.status(404).send("No Record Found");
+      } else {
+        res.json(results);
+      }
+    });
+});
+
+router.get("/", (req, res, next) => {
+  Diseases.find()
+    .populate("pest", "_id pestName type")
+    .exec()
+    .then((result) => {
+      // res.status(200).json(docs);
+      res.status(200).json({
+        count: result.length,
+        DiseasesFound: result.map((doc) => {
+          return {
+            _id: doc._id,
+            diseaseName: doc.diseaseName,
+            description: doc.description,
+            symptoms: doc.symptoms,
+            severity: doc.severity,
+            diseaseImage: doc.diseaseImage,
+            CausedBy: doc.causedBy,
+          };
+        }),
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
+});
+
+router.delete("/:ID", (req, res, next) => {
+  Diseases.deleteOne({ _id: req.params.ID })
+    .exec()
+    .then((result) => {
+      if (result.deletedCount > 0) {
+        res.status(200).json({
+          status: 1,
+          result,
+        });
+      } else {
+        res.status(404).json({
+          status: 0,
+          message: "No Disease Found with given ID",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
+});
+
+router.put(
+  "/",
+  upload.single("diseaseImage"),
+  setpermission,
+  async (req, res, next) => {
+    var objForUpdate = {};
+
+    console.log(req.body._id);
+
+    if (req.body.name) objForUpdate.diseaseName = req.body.name;
+    if (req.body.description) objForUpdate.description = req.body.description;
+    if (req.body.symptoms) objForUpdate.symptoms = req.body.symptoms;
+    if (req.body.cures) objForUpdate.cures = req.body.cures;
+    if (req.body.severity) objForUpdate.severity = req.body.severity;
+    if (req.file) {
+      const result = await cloudinary.v2.uploader.upload(req.file.path);
+      console.log(result);
+      if (result) {
+        objForUpdate.diseaseImage = result.url;
+        console.log(objForUpdate.diseaseImage);
+      }
+    }
+
+    Diseases.findOneAndUpdate(
+      {
+        _id: req.body._id,
+      },
+      objForUpdate,
+      function (error, results) {
+        if (error) {
+          return next(error);
+        }
+        if (results !== null) {
+          res.json({
+            status: 1,
+            message: "Disease Updated Successfully",
+            object: results,
+          });
+        } else {
+          res.status(404).json({
+            status: 0,
+            message: "Not Found",
+            object: results,
+          });
+        }
+      }
+    );
+  }
+);
 module.exports = router;
