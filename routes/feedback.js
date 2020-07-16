@@ -17,7 +17,7 @@ var upload = multer({ storage: storage,limits:{fileSize:12582912} })
 
 router.post('/uploadPhoto',(req,res,next)=>{
 	try{
-    const result = await cloudinary.v2.uploader.upload(req.file.path)
+    const result = cloudinary.v2.uploader.upload(req.file.path)
     console.log(result)
     if(result){
       res.status(200).json({
