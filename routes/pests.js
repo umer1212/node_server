@@ -80,6 +80,24 @@ router.get('/:ID',(req,res,next)=>{
 		res.status(500).json(err);
 	});
 });
+router.get('/ID/:ID',(req,res,next)=>{
+	Pests.findOne({_id:req.params.ID}).exec().then(doc=>{
+		res.status(200).json({
+			Id:doc.pestId,
+			Name:doc.pestName,
+			Type:doc.type,
+			ScientificName:doc.scientificName,
+			AppearsIn:doc.appearsIn,
+			ConfirmDiagnosis:doc.confirmDiagnosis,
+			PreventiveMeasures:doc.preventiveMeasures,
+			Images:doc.pestImages,
+			Members:doc.memberName
+		});
+	})
+	.catch(err=>{
+		res.status(500).json(err);
+	});
+});
 router.delete('/:ID',(req,res,next)=>{
 	Pests.remove({_id:req.params.ID}).exec()
 	.then(result=>{
