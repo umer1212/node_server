@@ -21,6 +21,7 @@ router.post('/uploadPhoto',upload.single("photo"),setpermission,async function(
   next
 ){
   const result = await cloudinary.v2.uploader.upload(req.file.path)
+  console.log(result)
   if(result){
     res.status(200).json({
       'read':true,
