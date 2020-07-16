@@ -2,9 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const FeedBack = require('../models/FeedBack');
 const router = express.Router();
-var cloudinary = require("cloudinary");
 require("../config/cloudinaryConfig");
 const upload = require("../config/multer");
+var cloudinary = require("cloudinary");
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -22,12 +22,13 @@ router.post("/", upload.single("profileImage"), setpermission, async function (
   next
 ){
 	try{
-    if (req.file) {
-      const result = await cloudinary.v2.uploader.upload(req.file.path);
-      console.log(result);
-      if (result) {
-        e.picturePath = result.url;
-      }
+    const result = await cloudinary.v2.uploader.upload(req.file.path)
+    console.log(result)
+    if(result){
+      res.status(200).json({
+        'read':true,
+        'ImageURL':result.url
+      });
     }
 	}
 	catch(e){
