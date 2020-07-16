@@ -32,6 +32,7 @@ router.post('/uploadPhoto',(req,res,next)=>{
 });
 
 router.post('/',(req,res,next)=>{
+  console.log(req.body)
   var Fd = new FeedBack({
     _id:mongoose.Types.ObjectId(),
     Farmer:req.body.Farmer,
