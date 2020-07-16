@@ -32,6 +32,18 @@ router.post('/',(req,res,next)=>{
 		console.log(err);
 	});
 });
+
+router.get('/:name',(req,res,next)=>{
+	Diseases.findOne({diseaseName:req.params.name}).exec().then(doc=>{
+		res.status(200).json({
+			'success':true,
+			'result':doc
+		});
+	})
+	.catch(err=>{
+		res.status(500).json(err);
+	});
+});
 router.get('/',(req,res,next)=>{
 	Pests
 	.find()
