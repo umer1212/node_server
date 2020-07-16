@@ -16,6 +16,7 @@ var plantRouter = require('./routes/plants');
 var pestRouter = require('./routes/pests');
 var diseaseRouter = require('./routes/diseases');
 var cureRouter = require('./routes/cures');
+var feed = require('./routes/feedback');
 
 var dbUrl = "mongodb+srv://dbAdmin:adminPassword@cluster0-7nmav.gcp.mongodb.net/smartfarming?retryWrites=true&w=majority";
 
@@ -59,6 +60,8 @@ app.use("/plant", plantRouter);
 app.use("/pest", pestRouter);
 app.use("/disease", diseaseRouter);
 app.use("/cure", cureRouter);
+app.use("/feedback", feed);
+
 
 
 
