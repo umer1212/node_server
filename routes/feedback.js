@@ -2,9 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const FeedBack = require('../models/FeedBack');
 const router = express.Router();
+const multer = require('multer');
+const cloudinary = require('cloudinary')
 require("../config/cloudinaryConfig");
-const upload = require("../config/multer");
-var cloudinary = require("cloudinary");
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -16,11 +16,7 @@ var storage = multer.diskStorage({
   });
 var upload = multer({ storage: storage,limits:{fileSize:12582912} })
 
-router.post("/uploadPhoto", upload.single("profileImage"), setpermission, async function (
-  req,
-  res,
-  next
-){
+router.post('/uploadPhoto', async function(req,res,next){
 	try{
     const result = await cloudinary.v2.uploader.upload(req.file.path)
     console.log(result)
