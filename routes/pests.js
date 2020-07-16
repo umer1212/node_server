@@ -54,15 +54,8 @@ router.get('/:name',(req,res,next)=>{
 router.get('/name/:name',(req,res,next)=>{
 	Pests.findOne({pestName:req.params.name}).exec().then(doc=>{
 		res.status(200).json({
-			Id:doc.pestId,
-			Name:doc.pestName,
-			Type:doc.type,
-			ScientificName:doc.scientificName,
-			AppearsIn:doc.appearsIn,
-			ConfirmDiagnosis:doc.confirmDiagnosis,
-			PreventiveMeasures:doc.preventiveMeasures,
-			Images:doc.pestImages,
-			Members:doc.memberName
+			'success':true,
+			'result':doc
 		});
 	})
 	.catch(err=>{
@@ -101,15 +94,8 @@ router.get('/:ID',(req,res,next)=>{
 router.get('/ID/:ID',(req,res,next)=>{
 	Pests.findOne({_id:req.params.ID}).exec().then(doc=>{
 		res.status(200).json({
-			Id:doc.pestId,
-			Name:doc.pestName,
-			Type:doc.type,
-			ScientificName:doc.scientificName,
-			AppearsIn:doc.appearsIn,
-			ConfirmDiagnosis:doc.confirmDiagnosis,
-			PreventiveMeasures:doc.preventiveMeasures,
-			Images:doc.pestImages,
-			Members:doc.memberName
+			'success':true,
+			'result':doc
 		});
 	})
 	.catch(err=>{
