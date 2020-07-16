@@ -4,6 +4,7 @@ const FeedBack = require('../models/FeedBack');
 const router = express.Router();
 const multer = require('multer');
 const upload = require("../config/multer");
+require("../config/cloudinaryConfig");
 
 var setpermission = function(req, res, next) {
   res.setHeader("Access-Control-Allow-Methods", "*");
