@@ -103,7 +103,7 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.get('/:ID',(req,res,next)=>{
+router.get('/ID/:ID',(req,res,next)=>{
 	Diseases.findOne({_id:req.params.ID}).exec().then(doc=>{
 		res.status(200).json({
 			'success':true,
@@ -115,7 +115,7 @@ router.get('/:ID',(req,res,next)=>{
 	});
 });
 
-router.get('/:name',(req,res,next)=>{
+router.get('/name/:name',(req,res,next)=>{
 	Diseases.findOne({diseaseName:req.params.name}).exec().then(doc=>{
 		res.status(200).json({
 			'success':true,
