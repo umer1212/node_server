@@ -3,42 +3,32 @@ const mongoose = require('mongoose');
 const FeedBack = require('../models/FeedBack');
 const router = express.Router();
 const multer = require('multer');
-const cloudinary = require('cloudinary')
-require("../config/cloudinaryConfig");
+const upload = require("../config/multer");
 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, './public/uploads/feedback')
-    },
-    filename: function (req, file, cb) {
-      cb(null,  file.originalname)
-    }
-  });
-var upload = multer({ storage: storage,limits:{fileSize:12582912} })
+var setpermission = function(req, res, next) {
+  res.setHeader("Access-Control-Allow-Methods", "*");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+};
 
-router.post('/uploadPhoto', async function(req,res,next){
-	try{
-    console.log(req.body)
-    const result = await cloudinary.v2.uploader.upload(req.file)
-    console.log(result)
-    if(result){
-      res.status(200).json({
-        'read':true,
-        'ImageURL':result.url
-      });
-    }
-	}
-	catch(e){
-		res.status(500).json({
-			'read':false,
-			'err':e
-		})
-		console.log(e);
-	}
+
+router.post('/uploadPhoto',upload.single("photo"),setpermission,async function(
+  req,
+  res,
+  next
+){
+  const result = await cloudinary.v2.uploader.upload(req.file.path)
+  if(result){
+    res.status(200).json({
+      'read':true,
+      'ImageURL':result.url
+    });
+  }
 });
 
 router.post('/',(req,res,next)=>{
-  console.log(req.body)
   var Fd = new FeedBack({
     _id:mongoose.Types.ObjectId(),
     Farmer:req.body.Farmer,
