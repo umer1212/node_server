@@ -16,7 +16,7 @@ var storage = multer.diskStorage({
   });
 var upload = multer({ storage: storage,limits:{fileSize:12582912} })
 
-router.post("/", upload.single("profileImage"), setpermission, async function (
+router.post("/uploadPhoto", upload.single("profileImage"), setpermission, async function (
   req,
   res,
   next
