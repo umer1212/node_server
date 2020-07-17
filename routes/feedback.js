@@ -28,7 +28,7 @@ router.post('/uploadPhoto',upload.single("photo"),setpermission,async function(
   }
 });
 
-router.post('/',upload.single("photo"),(req,res,next)=>{
+router.post('/',upload.single("photo"),async (req,res,next)=>{
   var Fd = new FeedBack({
     _id:mongoose.Types.ObjectId(),
     Farmer:req.body.Farmer,
