@@ -37,7 +37,9 @@ router.post('/',(req,res,next)=>{
     DatePublished:req.body.DatePublished,
     Detected:req.body.Detected,
     ImageURL:req.body.ImageURL,
-    FeedBack:req.body.FeedBack
+    FeedBack:req.body.FeedBack,
+    Prediction:req.body.Prediction
+
   }); 
   Fd.save().then(result=>{
       res.status(200).json({
