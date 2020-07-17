@@ -38,7 +38,8 @@ router.post('/',upload.single("photo"), setpermission, async (req,res,next)=>{
     Detected:req.body.Detected,
     // ImageURL:req.body.ImageURL,
     FeedBack:req.body.FeedBack
-  }); 
+  });
+  console.log(req.file);
   if(req.file){
     const result = await cloudinary.v2.uploader.upload(req.file.path)
   if(result){
