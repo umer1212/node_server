@@ -5,7 +5,9 @@ const Schema = mongoose.Schema({
     DatePublished:Date,
     Detected:String,
     ImageURL:String,
-    FeedBack:Number
+    FeedBack:Number,
+    Detected:String,
+    Prediction:String
 });
 
 module.exports = mongoose.model('FeedBack',Schema);
