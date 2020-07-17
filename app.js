@@ -17,9 +17,7 @@ var pestRouter = require('./routes/pests');
 var diseaseRouter = require('./routes/diseases');
 var cureRouter = require('./routes/cures');
 var feed = require('./routes/feedback');
-const requireToken = require('./middleware/requireToken')
-const authRoutes = require('./routes/authRoutes')
-require('./models/User');
+
 
 
 
@@ -66,7 +64,7 @@ app.use("/pest", pestRouter);
 app.use("/disease", diseaseRouter);
 app.use("/cure", cureRouter);
 app.use("/feedback", feed);
-app.use(authRoutes)
+
 
 
 
@@ -76,11 +74,7 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-app.get('/name',requireToken,(req,res)=>{
-  console.log('agy')
-  // next(requireToken);
-  res.send({email:req.user.email,address:req.user.address,phone:req.user.phone})
-})
+
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
