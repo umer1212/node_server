@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const FeedBack = require('../models/FeedBack');
 const router = express.Router();
+var cloudinary = require("cloudinary");
 const upload = require("../config/multer");
 require("../config/cloudinaryConfig");
 
