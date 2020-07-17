@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const FeedBack = require('../models/FeedBack');
 const router = express.Router();
-const multer = require('multer');
+var cloudinary = require("cloudinary");
 const upload = require("../config/multer");
 require("../config/cloudinaryConfig");
 
@@ -21,7 +21,7 @@ router.post('/uploadPhoto',upload.single("photo"),setpermission,async function(
   next
 ){
   const result = await cloudinary.v2.uploader.upload(req.file.path)
-  console.log(result)
+  
   if(result){
     res.status(200).json({
       'read':true,
@@ -30,17 +30,22 @@ router.post('/uploadPhoto',upload.single("photo"),setpermission,async function(
   }
 });
 
-router.post('/',(req,res,next)=>{
+router.post('/',upload.single("photo"), setpermission, async (req,res,next)=>{
   var Fd = new FeedBack({
     _id:mongoose.Types.ObjectId(),
     Farmer:req.body.Farmer,
     DatePublished:req.body.DatePublished,
     Detected:req.body.Detected,
-    ImageURL:req.body.ImageURL,
-    FeedBack:req.body.FeedBack,
-    Prediction:req.body.Prediction
-
-  }); 
+    // ImageURL:req.body.ImageURL,
+    FeedBack:req.body.FeedBack
+  });
+  console.log(req.file);
+  if(req.file){
+    const result = await cloudinary.v2.uploader.upload(req.file.path)
+  if(result){
+      Fd.ImageURL = result.url
+    }
+  }
   Fd.save().then(result=>{
       res.status(200).json({
           'success':true,
