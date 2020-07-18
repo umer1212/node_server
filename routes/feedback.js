@@ -73,4 +73,19 @@ router.get('/',(req,res,next)=>{
     });
 });
 
+router.get('/plantreport',(req,res,next)=>{
+	const aggregatorOpts = [
+		{
+			$group: {
+				_id: "$Prediction",
+				count: { $sum: 1 },
+			},
+		},
+	];
+	FeedBack.aggregate(aggregatorOpts)
+		.exec()
+		.then((food) => res.json(food))
+		.catch((err) => next(err));
+});
+
 module.exports = router;
