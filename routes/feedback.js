@@ -31,7 +31,7 @@ router.post('/uploadPhoto',upload.single("photo"),setpermission,async function(
 });
 
 router.post('/',upload.single("photo"), setpermission, async (req,res,next)=>{
-  console.log(req.body)
+  console.log(req.body.photo)
   var Fd = new FeedBack({
     _id:mongoose.Types.ObjectId(),
     Farmer:req.body.Farmer,
