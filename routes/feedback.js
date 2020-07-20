@@ -37,6 +37,7 @@ router.post('/',upload.single("photo"), setpermission, async (req,res,next)=>{
     Farmer:req.body.Farmer,
     DatePublished:req.body.DatePublished,
     Detected:req.body.Detected,
+    Prediction:req.body.Prediction,
     // ImageURL:req.body.ImageURL,
     FeedBack:req.body.FeedBack
   });
