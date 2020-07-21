@@ -50,6 +50,7 @@ router.get("/getStats", setpermission, async function (req, res, next) {
       console.log(err);
       return next(err);
     }
+    console.log(result);
     feedbackCount = result;
   });
 
