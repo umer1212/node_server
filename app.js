@@ -12,22 +12,21 @@ var expertRouter = require("./routes/experts");
 var communityRouter = require("./routes/community");
 var adminRouter = require("./routes/admin");
 var farmerRouter = require("./routes/farmer");
-var plantRouter = require('./routes/plants');
-var pestRouter = require('./routes/pests');
-var diseaseRouter = require('./routes/diseases');
-var cureRouter = require('./routes/cures');
-var feed = require('./routes/feedback');
+var plantRouter = require("./routes/plants");
+var pestRouter = require("./routes/pests");
+var diseaseRouter = require("./routes/diseases");
+var cureRouter = require("./routes/cures");
+var feed = require("./routes/feedback");
+var dashboardRouter = require("./routes/dashboard");
 
+var dbUrl =
+  "mongodb+srv://dbAdmin:adminPassword@cluster0-7nmav.gcp.mongodb.net/smartfarming?retryWrites=true&w=majority";
 
-
-
-var dbUrl = "mongodb+srv://dbAdmin:adminPassword@cluster0-7nmav.gcp.mongodb.net/smartfarming?retryWrites=true&w=majority";
-
-db.on("error", function() {
+db.on("error", function () {
   console.log("there was an error communicating with the database");
 });
 
-mongoose.connect(dbUrl, function(err) {
+mongoose.connect(dbUrl, function (err) {
   if (err) {
     return console.log("there was a problem connecting to the database!" + err);
   }
@@ -38,11 +37,11 @@ var app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
-app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Methods', '*')
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Headers', '*')
-  res.setHeader('Access-Control-Allow-Credentials', true);
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Methods", "*");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
 
@@ -64,19 +63,15 @@ app.use("/pest", pestRouter);
 app.use("/disease", diseaseRouter);
 app.use("/cure", cureRouter);
 app.use("/feedback", feed);
-
-
-
-
+app.use("/dashboard", dashboardRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
-
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
